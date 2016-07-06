@@ -42,7 +42,7 @@ dateFrom <- Sys.Date()-30
 dateTo <- Sys.Date()-1 
 
 # Call SCAuth function to set credentials before usage
-SCAuth("[API Key]", "[API Secret]")
+SCAuth("[Web Services User Name]", "[Web Services Shared Secret]")
 
 ###########################################
 # Configure the RSIDs you want to include
