@@ -19,15 +19,10 @@
 monitorStartTime <- Sys.time()
 
 # Packages needed
-library(RSiteCatalyst) # Get data from Adobe Analytics
-library(jsonlite) # Needed for RSiteCatalyst (?)
-library(devtools) # Needed for RSiteCatalyst (?)
-library(httr) # Needed for RSiteCatalyst (?)
-library(base64enc) # Needed for RSiteCatalyst (?)
-library(dplyr) # Streamline some of the code
-library(tidyr) # Clean up the data -- get it into "tidy" (flat) format
-library(WriteXLS)
-library(tools)
+packages <- c("RSiteCatalyst", "tidyverse", "jsonlite", "devtools", "httr", "base64enc", "WriteXLS", "tools")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())))  
+}
 
 #Validate that underlying Perl modules for WriteXLS are installed correctly
 #Will return "Perl found. All required Perl modules were found" if installed correctly
