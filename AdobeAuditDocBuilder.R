@@ -18,11 +18,9 @@
 # it took for the process to run.
 monitorStartTime <- Sys.time()
 
-# Packages needed
-packages <- c("RSiteCatalyst", "tidyverse", "jsonlite", "devtools", "httr", "base64enc", "WriteXLS", "tools")
-if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
-  install.packages(setdiff(packages, rownames(installed.packages())))  
-}
+# Check for packages needed and then load the packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(RSiteCatalyst, tidyverse, jsonlite, devtools, httr, base64enc, WriteXLS, tools)
 
 #Validate that underlying Perl modules for WriteXLS are installed correctly
 #Will return "Perl found. All required Perl modules were found" if installed correctly
@@ -49,7 +47,7 @@ SCAuth("[Web Services User Name]", "[Web Services Shared Secret]")
 # simply replace the [RSID] below with an actual RSID and leave the remaining 
 # sections commented out. If you want to manually enter multiple RSIDs, replace
 # "[RSID]" with: c("[RSID 1]","[RSID 2]",...,"[RSID X]")
-RSIDs <- "[RSID]"
+RSIDs <- data.frame(rsid = "[RSID]")
 
 # OPTION #2: Run the process for all RSIDs that the credentials specified above have
 # access to. It can take ~20 minutes per RSID, so this isn't recommended if there
