@@ -49,6 +49,7 @@ SCAuth("[Web Services User Name]", "[Web Services Shared Secret]")
 # simply replace the [RSID] below with an actual RSID and leave the remaining 
 # sections commented out. If you want to manually enter multiple RSIDs, replace
 # "[RSID]" with: c("[RSID 1]","[RSID 2]",...,"[RSID X]")
+RSIDs <- "[RSID]"
 
 # OPTION #2: Run the process for all RSIDs that the credentials specified above have
 # access to. It can take ~20 minutes per RSID, so this isn't recommended if there
