@@ -54,7 +54,6 @@ SCAuth("[Web Services User Name]", "[Web Services Shared Secret]")
 # simply replace the [RSID] below with an actual RSID and leave the remaining 
 # sections commented out. If you want to manually enter multiple RSIDs, replace
 # "[RSID]" with: c("[RSID 1]","[RSID 2]",...,"[RSID X]")
-RSIDs <- data.frame(rsid = "[RSID]")
 
 # OPTION #2: Run the process for all RSIDs that the credentials specified above have
 # access to. It can take ~20 minutes per RSID, so this isn't recommended if there
@@ -347,6 +346,7 @@ for (r in 1:nrow(RSIDs)){
   eVarsConfig$Merchandising_Syntax[eVarsConfig$Merchandising_Syntax=="product"] <- "Product Syntax"
   eVarsConfig$Merchandising_Syntax[eVarsConfig$Merchandising_Syntax=="conversion_variable"] <- "Conversion Syntax"
   eVarsConfig$Binding_Events[eVarsConfig$Binding_Events=="NULL"] <- ""
+  eVarsConfig$Description <- gsub("\r\n"," ",eVarsConfig$Description)  # Replace carriage returns with a space
 
   ##############
   # Core/standard
@@ -379,7 +379,8 @@ for (r in 1:nrow(RSIDs)){
   sPropsConfig$Participation[sPropsConfig$Participation==FALSE] <- "Disabled"
   sPropsConfig$Pathing[sPropsConfig$Pathing==TRUE] <- "Enabled"
   sPropsConfig$Pathing[sPropsConfig$Pathing==FALSE] <- "Disabled"
-
+  sPropsConfig$Description <- gsub("\r\n"," ",sPropsConfig$Description)  # Replace carriage returns with a space
+  
   # A hack... really just want the worksheet tab to be "populatedData."
   # Should either change the masterData object throughout the code
   # or just rename the data frame.
