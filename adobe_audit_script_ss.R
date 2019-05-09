@@ -80,7 +80,9 @@ SC_Props <- SC_Props %>%
 SC_Props_Final <- SC_Props %>% 
   select(id, name, description, pathing_enabled, list_enabled, participation_enabled,
          data_status, uniqueVals, instances, example_1, example_2, example_3,
-         example_4, example_5)
+         example_4, example_5) %>% 
+  # Replace line and carriage returns with nothing
+  mutate(description = gsub("\\r\\n","", description))
 
 
 write.csv(SC_Props_Final, paste("SC_Props_wwrs_",RSID,"_",today(),".csv",sep=""))
@@ -145,7 +147,9 @@ SC_Evars <- SC_Evars %>%
 SC_Evars_Final <- SC_Evars %>% 
   select(id, name, description, type, expiration_type, expiration_custom_days,
          allocation_type, merchandising_syntax, data_status, uniqueVals, instances, 
-         example_1, example_2, example_3, example_4, example_5)
+         example_1, example_2, example_3, example_4, example_5) %>% 
+  # Replace line and carriage returns with nothing
+  mutate(description = gsub("\\r\\n","", description))
 
 
 write.csv(SC_Evars_Final, paste("SC_Evars_wwrs_",RSID,"_",today(),".csv",sep=""))
@@ -188,7 +192,9 @@ SC_Events <- SC_Events %>%
 SC_Events_Final <- SC_Events %>% 
   filter(type != "disabled") %>% 
   select(id, name, description, type, participation, serialization, visibility,
-         polarity, data_status, evtTotal)
+         polarity, data_status, evtTotal) %>% 
+  # Replace line and carriage returns with nothing
+  mutate(description = gsub("\\r\\n","", description))
 
 write.csv(SC_Events_Final, paste("SC_Events_wwrs_",RSID,"_",today(),".csv",sep=""))
 
