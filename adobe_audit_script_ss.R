@@ -10,12 +10,14 @@ pacman::p_load(RSiteCatalyst, tidyverse, sqldf, data.table, tcltk, lubridate, Wr
 # Will return "Perl found. All required Perl modules were found" if installed correctly
 testPerl()
 
-client_id <- Sys.getenv("ADOBE_API_USERNAME_MAR")
-client_secret <- Sys.getenv("ADOBE_API_SECRET_MAR")
+# Get credentials and report suite ID from .Renviron
+client_id <- Sys.getenv("ADOBE_API_USERNAME")
+client_secret <- Sys.getenv("ADOBE_API_SECRET")
 
 SCAuth(client_id, client_secret)
-RSID <- Sys.getenv("ADOBE_RSID_MAR")
+RSID <- Sys.getenv("ADOBE_RSID")
 
+# Set the date range for how far back to go
 end_date <- today() - days(1)
 start_date <- today() - days(60)
 
@@ -27,9 +29,6 @@ min_instances <- 100
 ##############################################################################################
 
 SC_Props <- GetProps(RSID)
-
-# # Temporarily just get the first 5
-# SC_Props <- SC_Props[1:5,]
 
 # Add few new columns to SC_Props to hold uniqueVals and instance counts. Set all rows to 0 initially
 SC_Props$uniqueVals <- 0
