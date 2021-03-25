@@ -11,15 +11,19 @@ pacman::p_load(RSiteCatalyst, tidyverse, sqldf, data.table, tcltk, lubridate, Wr
 testPerl()
 
 # Get credentials and report suite ID from .Renviron
-client_id <- Sys.getenv("ADOBE_API_USERNAME")
-client_secret <- Sys.getenv("ADOBE_API_SECRET")
+client_id <- Sys.getenv("ADOBE_API_USERNAME_QKL")
+client_secret <- Sys.getenv("ADOBE_API_SECRET_QKL")
 
 SCAuth(client_id, client_secret)
-RSID <- Sys.getenv("ADOBE_RSID")
+RSID <- Sys.getenv("ADOBE_RSID_QKL")
+
+# Populate a segment if desired
+segment <- ""
+# segment <- "s300006896_601b285852431f7a137e6bb9"  # RH Cloud
 
 # Set the date range for how far back to go
 end_date <- today() - days(1)
-start_date <- today() - days(60)
+start_date <- today() - days(30)
 
 # Cutoff for total instances below which will flag as "Minimal Data"
 min_instances <- 100
@@ -28,7 +32,8 @@ min_instances <- 100
 ## Props - SDR, Factors, and Usage
 ##############################################################################################
 
-SC_Props <- GetProps(RSID)
+SC_Props <- GetProps(RSID) %>% 
+  filter(enabled == TRUE)
 
 # Add few new columns to SC_Props to hold uniqueVals and instance counts. Set all rows to 0 initially
 SC_Props$uniqueVals <- 0
@@ -50,8 +55,9 @@ for (prop in ids) {
                            date.to = end_date,
                            metrics = c("instances"),
                            elements = c(prop),
-                           top =c(5000)
-  )
+                           segment.id = segment,
+                           top = 5000)
+
   SC_Props[prop,"uniqueVals"] <-nrow(rankedRpt)
   SC_Props[prop,"instances"] <-sum(rankedRpt$instances)
   if ( dim(rankedRpt)[1]==0 ) {
@@ -84,12 +90,13 @@ SC_Props_Final <- SC_Props %>%
   mutate(description = gsub("\\r\\n","", description))
 
 
-write.csv(SC_Props_Final, paste("SC_Props_wwrs_",RSID,"_",today(),".csv",sep=""))
+write.csv(SC_Props_Final, paste("output/SC_Props_wwrs_",RSID,"_",today(),".csv",sep=""))
 
 ##############################################################################################
 ## eVars -  SDR, Factors, and Usage
 ##############################################################################################
-SC_Evars<-GetEvars(RSID)
+SC_Evars<-GetEvars(RSID) %>% 
+  filter(enabled == TRUE)
 
 # # Temporarily just get the first 5
 # SC_Evars <- SC_Evars[1:3,]
@@ -115,6 +122,7 @@ for (evar in ids ) {
                            date.to = end_date,
                            metrics = c("instances"),
                            elements = c(evar),
+                           segment.id = segment,
                            top =c(5000)
   )
   SC_Evars[evar,"uniqueVals"] <-nrow(rankedRpt)
@@ -151,7 +159,7 @@ SC_Evars_Final <- SC_Evars %>%
   mutate(description = gsub("\\r\\n","", description))
 
 
-write.csv(SC_Evars_Final, paste("SC_Evars_wwrs_",RSID,"_",today(),".csv",sep=""))
+write.csv(SC_Evars_Final, paste("output/SC_Evars_wwrs_",RSID,"_",today(),".csv",sep=""))
 
 
 ##############################################################################################
@@ -175,6 +183,7 @@ for (evt in ids) {
                                date.from = start_date,
                                date.to = end_date,
                                metrics = c(evt),
+                               segment.id = segment,
                                date.granularity = "year"
   )
   SC_Events[evt,"evtTotal"] <-sum(overTimeRpt[evt])
@@ -195,7 +204,7 @@ SC_Events_Final <- SC_Events %>%
   # Replace line and carriage returns with nothing
   mutate(description = gsub("\\r\\n","", description))
 
-write.csv(SC_Events_Final, paste("SC_Events_wwrs_",RSID,"_",today(),".csv",sep=""))
+write.csv(SC_Events_Final, paste("output/SC_Events_wwrs_",RSID,"_",today(),".csv",sep=""))
 
 
 ######################## 
@@ -208,7 +217,7 @@ objlist <- c("SC_Events_Final","SC_Evars_Final","SC_Props_Final")
 # And...we actually want to make the worksheet names a bit cleaner
 sheetNames <- c("Events","eVars","Props")
 
-filename <- paste(RSID, " - ", as.character(start_date), " - ", as.character(end_date),  ".xlsx",sep="")
+filename <- paste("output/", RSID, " - ", as.character(start_date), " - ", as.character(end_date),  ".xlsx",sep="")
 
 # Write out Excel file with auto-width columns, a bolded header row and filters turned on
 WriteXLS(objlist, filename, SheetNames = sheetNames,

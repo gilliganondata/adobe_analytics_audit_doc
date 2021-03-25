@@ -27,7 +27,6 @@ pacman::p_load(RSiteCatalyst, tidyverse, jsonlite, devtools, httr, base64enc, Wr
 testPerl()
 
 ############################################
-
 # Set the start date. This is set up to pull data for the last 30 days.
 dateFrom <- Sys.Date()-30
 
